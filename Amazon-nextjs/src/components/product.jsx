@@ -2,6 +2,8 @@ import Image from "next/image";
 import { useState } from "react";
 import { StarIcon } from "@heroicons/react/24/solid";
 import { useEffect } from "react";
+import { useDispatch } from "react-redux";
+import { addToBasket } from "../slices/basketSlice";
 
 const MIN_RATING = 1;
 const MAX_RATING = 5;
@@ -16,8 +18,23 @@ export const Currency = ({ price }) => {
 };
 
 export const Product = ({ id, price, title, description, category, image }) => {
+  const dispatch = useDispatch();
   const [rating, setRating] = useState(null);
   const [hasPrime, setHasPrime] = useState(false);
+  const addItemToBasket = () => {
+    const product = {
+      id,
+      price,
+      title,
+      description,
+      category,
+      image,
+      hasPrime,
+      rating
+    };
+
+    dispatch(addToBasket(product));
+  };
 
   useEffect(() => {
     setRating(
@@ -67,7 +84,9 @@ export const Product = ({ id, price, title, description, category, image }) => {
         </div>
       )}
 
-      <button className="mt-auto button">Add to Basket</button>
+      <button className="mt-auto button" onClick={addItemToBasket}>
+        Add to Basket
+      </button>
     </div>
   );
 };
