@@ -1,3 +1,5 @@
+"use client";
+
 import Image from "next/image";
 import {
   MagnifyingGlassIcon,
@@ -5,7 +7,7 @@ import {
   Bars3Icon,
 } from "@heroicons/react/24/outline";
 import { signIn, signOut, useSession } from "next-auth/react";
-import { useRouter } from "next/router";
+import { useRouter } from "next/navigation";
 import { useSelector } from "react-redux";
 import { selectItems } from "../slices/basketSlice";
 
