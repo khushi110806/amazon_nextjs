@@ -1,5 +1,14 @@
-import { Carousel } from "react-responsive-carousel";
+"use client"
+
 import "react-responsive-carousel/lib/styles/carousel.min.css";
+
+import dynamic from "next/dynamic";
+
+const Carousel = dynamic(
+  () =>
+    import("react-responsive-carousel").then((mod) => mod.Carousel),
+  { ssr: false }
+);
 
 export const Banner = () => {
   return (

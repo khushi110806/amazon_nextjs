@@ -1,14 +1,49 @@
+"use client"
+
 import { useSelector } from "react-redux";
-import { Header } from "../components/header";
+import { Header } from "../../components/header";
 import Image from "next/image";
-import { selectItems, selectTotal } from "../slices/basketSlice";
-import { CheckoutProduct } from "../components/checkout-product";
-import { Currency } from "../components/product";
+import { selectItems, selectTotal } from "../../slices/basketSlice";
+import { CheckoutProduct } from "../../components/checkout-product";
+import { Currency } from "../../components/product";
 import { useSession } from "next-auth/react";
+import { loadStripe } from "@stripe/stripe-js";
+import axios from "axios";
+
 const Checkout = () => {
   const items = useSelector(selectItems);
   const { data: session } = useSession();
   const total = useSelector(selectTotal);
+  const mackPayment = async () => {
+
+    try{
+         const stripe = await loadStripe(process.env.stripe_public_key);
+
+    const checkoutSession = await axios.post("/api/create-checkout-session", {
+      items: items,
+      email: session.user.email,
+    });
+
+      if (!checkoutSession.data?.url) {
+      throw new Error("Stripe session URL missing");
+    }
+
+    window.location.href = checkoutSession.data.url;
+
+    }catch(error){
+         console.error("Checkout error:", error);
+
+    // Axios-specific message
+    if (axios.isAxiosError(error)) {
+      alert(
+        error.response?.data?.error ||
+        "Unable to start checkout. Please try again."
+      );
+    } else {
+      alert(error.message || "Something went wrong");
+    }
+    } 
+  };
 
   return (
     <div className="bg-gray-100">
@@ -54,7 +89,11 @@ const Checkout = () => {
                   <Currency price={total} />
                 </span>
               </h2>
-              <button className="button mt-2 cursor-not-allowed">
+              <button
+                className="button mt-2 cursor-allowed"
+                role="link"
+                onClick={() => mackPayment()}
+              >
                 {!session ? "Sign in to checkout" : "Proceed checkout"}
               </button>
             </>
