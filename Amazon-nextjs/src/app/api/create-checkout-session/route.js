@@ -1,10 +1,11 @@
 import Stripe from "stripe";
 import { NextResponse } from "next/server";
-
-const stripe = new Stripe(process.env.STRIPE_SECRET_KEY);
+export const runtime = "nodejs"; // important for Stripe
 
 export async function POST(req) {
   try {
+    const stripe = new Stripe(process.env.STRIPE_SECRET_KEY);
+
     const body = await req.json();
     const { items, email } = body;
 
@@ -29,31 +30,25 @@ export async function POST(req) {
 
     const session = await stripe.checkout.sessions.create({
       payment_method_types: ["card"],
-
       shipping_options: [
         {
           shipping_rate: "shr_1SqwIDRYygPS4rfJedLMpqKe",
         },
       ],
-
       shipping_address_collection: {
         allowed_countries: ["US", "CA"],
       },
-
       line_items: transformedItems,
       mode: "payment",
-
       success_url: `${process.env.HOST}/success`,
       cancel_url: `${process.env.HOST}/checkout`,
-
       metadata: {
         email,
-        images: JSON.stringify(items.map(item => item.image)),
+        images: JSON.stringify(items.map((item) => item.image)),
       },
     });
 
     return NextResponse.json({ url: session.url });
-
   } catch (error) {
     console.error("STRIPE ERROR:", error);
 
