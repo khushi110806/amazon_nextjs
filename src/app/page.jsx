@@ -2,6 +2,8 @@ import { Header } from "../components/header";
 import { Banner } from "../components/Banner";
 import { ProductFeed } from "../components/product-feed";
 
+export const dynamic = 'force-dynamic';
+
 async function getProducts() {
   try {
     const res = await fetch("https://fakestoreapi.com/products", {
@@ -20,7 +22,7 @@ async function getProducts() {
     return res.json();
   } catch (error) {
     console.error("Failed to fetch products:", error);
-    return []; // ← return empty array so page still renders
+    return []; 
   }
 }
 
