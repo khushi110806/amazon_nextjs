@@ -3,11 +3,25 @@ import { Banner } from "../components/Banner";
 import { ProductFeed } from "../components/product-feed";
 
 async function getProducts() {
-  const res = await fetch("https://fakestoreapi.com/products", {
-    cache: "no-store", // same as getServerSideProps
-  });
+  try {
+    const res = await fetch("https://fakestoreapi.com/products", {
+      cache: "no-store",
+    });
 
-  return res.json();
+    if (!res.ok) {
+      throw new Error(`API failed with status: ${res.status}`);
+    }
+
+    const contentType = res.headers.get("content-type");
+    if (!contentType?.includes("application/json")) {
+      throw new Error("API did not return JSON");
+    }
+
+    return res.json();
+  } catch (error) {
+    console.error("Failed to fetch products:", error);
+    return []; // ← return empty array so page still renders
+  }
 }
 
 export default async function Home() {
