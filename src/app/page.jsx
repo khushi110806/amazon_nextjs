@@ -1,8 +1,8 @@
+export const dynamic = 'force-dynamic'; // ← add this as first line
+
 import { Header } from "../components/header";
 import { Banner } from "../components/Banner";
 import { ProductFeed } from "../components/product-feed";
-
-export const dynamic = 'force-dynamic';
 
 async function getProducts() {
   try {
@@ -22,7 +22,7 @@ async function getProducts() {
     return res.json();
   } catch (error) {
     console.error("Failed to fetch products:", error);
-    return []; 
+    return [];
   }
 }
 
@@ -32,7 +32,6 @@ export default async function Home() {
   return (
     <div className="bg-gray-100 min-h-screen">
       <Header />
-
       <main className="max-w-screen-2xl mx-auto">
         <Banner />
         <ProductFeed products={products} />
