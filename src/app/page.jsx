@@ -1,30 +1,19 @@
-export const dynamic = 'force-dynamic'; // ← add this as first line
+"use client"
 
+import { useState, useEffect } from "react";
 import { Header } from "../components/header";
 import { Banner } from "../components/Banner";
 import { ProductFeed } from "../components/product-feed";
 
-async function getProducts() {
-  try {
-    const res = await fetch("https://fakestoreapi.com/products", {
-      cache: "no-store",
-      headers: {
-        "Accept": "application/json",
-        "User-Agent": "Mozilla/5.0"  // ← some APIs block non-browser requests
-      }
-    });
+export default function Home() {
+  const [products, setProducts] = useState([]);
 
-    if (!res.ok) throw new Error(`Status: ${res.status}`);
-    return res.json();
-
-  } catch (error) {
-    console.error("Failed to fetch products:", error.message);
-    return [];
-  }
-}
-
-export default async function Home() {
-  const products = await getProducts();
+  useEffect(() => {
+    fetch("https://fakestoreapi.com/products")
+      .then(res => res.json())
+      .then(data => setProducts(data))
+      .catch(err => console.error("Failed to fetch:", err));
+  }, []);
 
   return (
     <div className="bg-gray-100 min-h-screen">
