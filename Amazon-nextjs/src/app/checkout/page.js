@@ -17,7 +17,7 @@ const Checkout = () => {
   const mackPayment = async () => {
 
     try{
-         const stripe = await loadStripe(process.env.stripe_public_key);
+         const stripe = await loadStripe(process.env.NEXT_PUBLIC_STRIPE_PUBLIC_KEY);
 
     const checkoutSession = await axios.post("/api/create-checkout-session", {
       items: items,
