@@ -8,20 +8,17 @@ async function getProducts() {
   try {
     const res = await fetch("https://fakestoreapi.com/products", {
       cache: "no-store",
+      headers: {
+        "Accept": "application/json",
+        "User-Agent": "Mozilla/5.0"  // ← some APIs block non-browser requests
+      }
     });
 
-    if (!res.ok) {
-      throw new Error(`API failed with status: ${res.status}`);
-    }
-
-    const contentType = res.headers.get("content-type");
-    if (!contentType?.includes("application/json")) {
-      throw new Error("API did not return JSON");
-    }
-
+    if (!res.ok) throw new Error(`Status: ${res.status}`);
     return res.json();
+
   } catch (error) {
-    console.error("Failed to fetch products:", error);
+    console.error("Failed to fetch products:", error.message);
     return [];
   }
 }
