@@ -1,4 +1,4 @@
-"use client"
+"use client";
 
 import { useSelector } from "react-redux";
 import { Header } from "../../components/header";
@@ -14,35 +14,36 @@ const Checkout = () => {
   const items = useSelector(selectItems);
   const { data: session } = useSession();
   const total = useSelector(selectTotal);
+
   const mackPayment = async () => {
+    try {
+      const stripe = await loadStripe(
+        process.env.NEXT_PUBLIC_STRIPE_PUBLIC_KEY,
+      );
 
-    try{
-         const stripe = await loadStripe(process.env.NEXT_PUBLIC_STRIPE_PUBLIC_KEY);
-
-    const checkoutSession = await axios.post("/api/create-checkout-session", {
-      items: items,
-      email: session.user.email,
-    });
+      const checkoutSession = await axios.post("/api/create-checkout-session", {
+        items: items,
+        email: session.user.email,
+      });
 
       if (!checkoutSession.data?.url) {
-      throw new Error("Stripe session URL missing");
+        throw new Error("Stripe session URL missing");
+      }
+
+      window.location.href = checkoutSession.data.url;
+    } catch (error) {
+      console.error("Checkout error:", error);
+
+      // Axios-specific message
+      if (axios.isAxiosError(error)) {
+        alert(
+          error.response?.data?.error ||
+            "Unable to start checkout. Please try again.",
+        );
+      } else {
+        alert(error.message || "Something went wrong");
+      }
     }
-
-    window.location.href = checkoutSession.data.url;
-
-    }catch(error){
-         console.error("Checkout error:", error);
-
-    // Axios-specific message
-    if (axios.isAxiosError(error)) {
-      alert(
-        error.response?.data?.error ||
-        "Unable to start checkout. Please try again."
-      );
-    } else {
-      alert(error.message || "Something went wrong");
-    }
-    } 
   };
 
   return (
