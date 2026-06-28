@@ -10,7 +10,8 @@ const endpointSecret = process.env.STRIPE_SIGNING_SECRET;
 
 // ---- Firebase Admin Init (singleton-safe) ----
 if (!admin.apps.length) {
-  const serviceAccount = require("../../../../permissions.json");
+  const permissions = JSON.parse(process.env.PERMISSIONS_JSON || "{}");
+  const serviceAccount = permissions;
 
   admin.initializeApp({
     credential: admin.credential.cert(serviceAccount),
