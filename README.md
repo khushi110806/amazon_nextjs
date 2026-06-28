@@ -23,6 +23,11 @@ Run commands
 3) ```yarn run dev```
 
 
-### If you see the window below then you are set to build AMAZON 2.0!
+### Amazon clone with nextjs + stripe + webhooks + SSR + firebase : 
 
-![Template Screenshot](TemplateScreenshot.jpg?raw=true "Template Screenshot")
+![Amazon-nextjs](home-page.png?raw=true "Amazon Nextjs")
+
+
+### Test this out - 
+
+https://amazon-nextjs-nine.vercel.app/
